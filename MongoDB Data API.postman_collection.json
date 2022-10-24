@@ -1,0 +1,250 @@
+{
+	"info": {
+		"_postman_id": "a419119f-46e2-4bae-a986-f409dc90176b",
+		"name": "MongoDB Data API",
+		"description": "This collection is an introduction to the [MongoDB Data API](https://www.mongodb.com/data-api/l). The Data API provides you with a REST-like access to your data in [MongoDB Atlas](https://www.mongodb.com/atlas), the database-as-a-service offering by MongoDB.\n\nYou can find the full documentation on the MongoDB Data API on the [documentation website](https://docs.atlas.mongodb.com/api/data-api-resources/#data-api-resources).\n\n## Getting Started\n\nTo test out the MongoDB Data API collection, start by [creating a free MongoDB Atlas cluster](https://docs.atlas.mongodb.com/tutorial/deploy-free-tier-cluster/).\n\nOnce you have a cluster, you can [fork this collection](https://www.postman.com/mongodb-devrel/workspace/mongodb-public/collection/17898583-25682080-e247-4d25-8e5c-1798461c7db4/fork) into your own workspace so you'll be able to use it with your own variables.\n\nOnce you have a cluster up and running, [enable the Data API](https://docs.atlas.mongodb.com/api/data-api/#1.-enable-the-data-api).\n\nFrom the Atlas UI, copy the URL endpoint provided for the Data API, and paste the value in your URL_ENDPOINT collection variable.\n\nStill in the Atlas UI, create a new API key, copy the value and paste it in the API_KEY collection variable.\n\nWith the [EJSON format](https://www.mongodb.com/docs/atlas/api/data-api/#extended-json-responses), you can benefit from MongoDB’s Extended JSON format, which preserves many data types that are normally not supported by JSON (such as ObjectID, Date, and more).\n\nFor writes, the {{CONTENT_TYPE}} variable is required and can be set to either `json` or `ejson`. This variable is used by Postman in the *Content-Type* header.\n\nFor reads, the Data API returns JSON by default, but can be changed to EJSON by setting the *Accept* header. You can set the {{CONTENT_TYPE}} variable to `json` or `ejson` to change the default behavior. Changing this variable will change the *Accept* header when Postman does a request to the Data API. The default content type returned by Atlas can also be changed in the Atlas Admin UI.\n\nFill in the other variables with the appropriate values for your cluster, database, and collection names.\n\nYou can now explore the various endpoints and see how to perform CRUD operations on your collection using the MongoDB Data API.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23227632"
+	},
+	"item": [
+		{
+			"name": "Insert Document",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Access-Control-Request-Headers",
+						"value": "*"
+					},
+					{
+						"key": "api-key",
+						"value": "{{API_KEY}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n      \"dataSource\": \"{{CLUSTER_NAME}}\",\n      \"database\": \"{{DATABASE}}\",\n      \"collection\": \"{{COLLECTION}}\",\n      \"document\": {\n        \"name\": \"John Sample\",\n        \"age\": 42\n      }\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL_ENDPOINT}}/action/insertOne",
+					"host": [
+						"{{URL_ENDPOINT}}"
+					],
+					"path": [
+						"action",
+						"insertOne"
+					]
+				},
+				"description": "Using the `/insertOne` endpoint, you can add a document to a collection. Use the `document` property in the request body to specify the document that should be created."
+			},
+			"response": []
+		},
+		{
+			"name": "Find Document",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/{{CONTENT_TYPE}}"
+					},
+					{
+						"key": "Access-Control-Request-Headers",
+						"value": "*"
+					},
+					{
+						"key": "api-key",
+						"value": "{{API_KEY}}"
+					},
+					{
+						"key": "Accept",
+						"value": "application/{{CONTENT_TYPE}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n      \"dataSource\": \"{{DATA_SOURCE}}\",\n      \"database\": \"{{DATABASE}}\",\n      \"collection\": \"{{COLLECTION}}\",\n      \"filter\": { \"name\": \"John Sample\" }\n  }"
+				},
+				"url": {
+					"raw": "{{URL_ENDPOINT}}/action/findOne",
+					"host": [
+						"{{URL_ENDPOINT}}"
+					],
+					"path": [
+						"action",
+						"findOne"
+					]
+				},
+				"description": "Using the `/findOne` endpoint will let you retrieve a single document from a collection. Use the `filter` property in the request body to specify the search criteria. If more than one document matches the criteria, only the first match will be returned."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Document",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/{{CONTENT_TYPE}}"
+					},
+					{
+						"key": "Access-Control-Request-Headers",
+						"value": "*"
+					},
+					{
+						"key": "api-key",
+						"value": "{{API_KEY}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n      \"dataSource\": \"{{DATA_SOURCE}}\",\n      \"database\": \"{{DATABASE}}\",\n      \"collection\": \"{{COLLECTION}}\",\n      \"filter\": { \"name\": \"John Sample\" },\n      \"update\": { \"$set\": { \"age\": 24 } }\n  }"
+				},
+				"url": {
+					"raw": "{{URL_ENDPOINT}}/action/updateOne",
+					"host": [
+						"{{URL_ENDPOINT}}"
+					],
+					"path": [
+						"action",
+						"updateOne"
+					]
+				},
+				"description": "You can use the `/updateOne` endpoint to update a single record. Use the `filter` property in the request body to specify the search criteria. If more than one document matches the criteria, only the first match will be returned. Then use the `update` field to specify what should be updated. You should use one of the [update operators](https://docs.mongodb.com/manual/reference/operator/update-field/) to update your documents."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Document",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/{{CONTENT_TYPE}}"
+					},
+					{
+						"key": "Access-Control-Request-Headers",
+						"value": "*"
+					},
+					{
+						"key": "api-key",
+						"value": "{{API_KEY}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n      \"dataSource\": \"{{DATA_SOURCE}}\",\n      \"database\": \"{{DATABASE}}\",\n      \"collection\": \"{{COLLECTION}}\",\n      \"filter\": { \"name\": \"John Sample\" }\n  }"
+				},
+				"url": {
+					"raw": "{{URL_ENDPOINT}}/action/deleteOne",
+					"host": [
+						"{{URL_ENDPOINT}}"
+					],
+					"path": [
+						"action",
+						"deleteOne"
+					]
+				},
+				"description": "To delete a single document, use the `/deleteOne` endpoint. Use the `filter` property in the request body to specify the search criteria. If more than one document matches the criteria, only the first match will be deleted."
+			},
+			"response": []
+		},
+		{
+			"name": "Insert Multiple Documents",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/{{CONTENT_TYPE}}"
+					},
+					{
+						"key": "Access-Control-Request-Headers",
+						"value": "*"
+					},
+					{
+						"key": "api-key",
+						"value": "{{API_KEY}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n      \"dataSource\": \"{{DATA_SOURCE}}\",\n      \"database\": \"{{DATABASE}}\",\n      \"collection\": \"{{COLLECTION}}\",\n      \"documents\": [{\n        \"name\": \"John Sample\",\n        \"age\": 42\n      },{\n        \"name\": \"Mister Postman\",\n        \"age\": 37\n      },{\n        \"name\": \"Miss MongoDB\",\n        \"age\": 35\n      }]\n  }"
+				},
+				"url": {
+					"raw": "{{URL_ENDPOINT}}/action/insertMany",
+					"host": [
+						"{{URL_ENDPOINT}}"
+					],
+					"path": [
+						"action",
+						"insertMany"
+					]
+				},
+				"description": "You can add more than one document at a time by using the `/insertMany` endpoint. In that case, you must use the `documents` property in the body of the request to specify the array of documents you want to insert into the collection."
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL_ENDPOINT",
+			"value": "https://data.mongodb-api.com/app/data-mnvdc/endpoint/data/v1",
+			"type": "string"
+		},
+		{
+			"key": "API_KEY",
+			"value": "qG2HEO6HN43Y6k0etVBUPmgkY33IY8sByCTXcoOpNUYGtemdFlUt6PRWv5FGivRg"
+		},
+		{
+			"key": "CLUSTER_NAME",
+			"value": "Cluster0",
+			"type": "string"
+		},
+		{
+			"key": "DATABASE",
+			"value": "postman_new",
+			"type": "string"
+		},
+		{
+			"key": "COLLECTION",
+			"value": "loans",
+			"type": "string"
+		}
+	]
+}
